@@ -34,7 +34,13 @@ To run REMO, you will need the following:
 
 1. Start the FastAPI server: `uvicorn remo:app --reload`
 2. Interact with the API using a REST client or web browser: `http://localhost:8000`
-
+   * In Powershell,
+     ```shell
+     curl.exe --header "Content-Type: application/json" `
+         --request POST `
+         -d "@C:\Users\a.fomitchenko\PycharmProjects\REMO_Framework\tests\test_add_message.json" `
+         http://localhost:8000/search
+     ```
 
 ## Models
 

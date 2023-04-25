@@ -1,3 +1,6 @@
+from pydantic import BaseModel
+from starlette.requests import Request
+
 from fastapi import FastAPI
 import utils
 import os
@@ -10,22 +13,43 @@ max_cluster_size = 5
 # REMO = Rolling Episodic Memory Organizer
 
 
+class AddMessageData(BaseModel):
+    message: str
+    speaker: str
+    timestamp: float
+
+
 @app.post("/add_message")
 async def add_message(
-    message: str,
-    speaker: str,
-    timestamp: float,
+    add_message_data: AddMessageData,
 ):
+    new_message = {
+        _field: getattr(add_message_data, _field)
+        for _field in [
+            "message",
+            "speaker",
+            "timestamp",
+        ]
+    }
+    
     # Add message to REMO
-    new_message = utils.create_message(message, speaker, timestamp)
     print("\n\nADD MESSAGE -", new_message)
     utils.save_message(root_folder, new_message)
 
     return {"detail": "Message added"}
 
 
-@app.get("/search")
-async def search(query: str):
+@app.post("/search")
+async def search(
+    request: Request,
+):
+    
+    json_dict = await request.json()
+    
+    query = (
+        json_dict["query"]
+    )
+    
     # Search the tree for relevant nodes
     print("\n\nSEARCH -", query)
     taxonomy = utils.search_tree(root_folder, query)
