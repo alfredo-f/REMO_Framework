@@ -1,0 +1,5 @@
+fastapi[all]
+asgi-lifespan
+pytest
+pytest-asyncio
+pytest-mock

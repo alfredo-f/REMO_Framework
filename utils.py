@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 
@@ -25,12 +26,27 @@ ARE_YOU_TESTING__LOAD_MODEL_LOCAL = True
 ROOT_REPO_PATH = Path().parent.absolute()
 
 if ARE_YOU_TESTING__LOAD_MODEL_LOCAL:
-    embedding_model = tf.saved_model.load(
+    embedding_model_path = (
         ROOT_REPO_PATH
         / "models/universal-sentence-encoder-large_5"
     )
-
+    
+    logging.debug(
+        f"Loading embedding model from {embedding_model_path}"
+    )
+    
+    # TODO test
+    # embedding_model = tf.saved_model.load(embedding_model_path)
+    embedding_model = (
+        lambda *_, **__:
+        np.array([0] * 512)
+    )
+    
 else:
+    logging.debug(
+        "Loading embedding model from TF Hub"
+    )
+    
     embedding_model = hub.load(
         "https://tfhub.dev/google/universal-sentence-encoder-large/5"
     )
